@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的旅行足迹 · 中国</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0a;
+    color: #ffffff;
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .container {
+    display: flex;
+    height: 100vh;
+  }
+
+  .sidebar {
+    width: 300px;
+    background: #111111;
+    border-right: 1px solid #2a2a2a;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    flex-shrink: 0;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #C9A84C, #F0D060);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+  .logo-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: #C9A84C;
+    letter-spacing: 2px;
+  }
+
+  .stat-card {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: #666;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #C9A84C;
+    margin-top: 4px;
+  }
+  .stat-sub {
+    font-size: 12px;
+    color: #555;
+    margin-top: 2px;
+  }
+
+  .city-list {
+    flex: 1;
+    overflow-y: auto;
+    margin-top: 8px;
+  }
+  .city-list::-webkit-scrollbar { width: 4px; }
+  .city-list::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
+
+  .city-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 4px;
+    border-radius: 6px;
+    background: #161616;
+    font-size: 13px;
+    color: #888;
+  }
+  .city-item .province {
+    font-size: 11px;
+    color: #555;
+  }
+  .city-item .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #C9A84C;
+  }
+
+  .reset-btn {
+    margin-top: 16px;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid #3a3a3a;
+    color: #888;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+  .reset-btn:hover {
+    border-color: #C9A84C;
+    color: #C9A84C;
+  }
+
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .header {
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .header-title {
+    font-size: 16px;
+    color: #888;
+    letter-spacing: 1px;
+  }
+  .header-hint {
+    font-size: 13px;
+    color: #555;
+    margin-left: auto;
+  }
+  .header-hint span {
+    color: #C9A84C;
+  }
+
+  .back-btn {
+    display: none;
+    padding: 6px 16px;
+    background: transparent;
+    border: 1px solid #C9A84C;
+    color: #C9A84C;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+  .back-btn:hover { background: rgba(201,168,76,0.1); }
+  .back-btn.show { display: block; }
+
+  #map {
+    flex: 1;
+  }
+
+  .toast {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 24px;
+    background: #1a1a1a;
+    border: 1px solid #C9A84C;
+    color: #C9A84C;
+    border-radius: 8px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; }
+
+  .legend {
+    position: absolute;
+    bottom: 24px;
+    right: 32px;
+    display: flex;
+    gap: 20px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #666;
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">✈</div>
+      <div class="logo-text">旅行足迹</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">已访问城市</div>
+      <div class="stat-value" id="visitedCount">0</div>
+      <div class="stat-sub" id="coverageText">覆盖 0 个省份</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">探索率</div>
+      <div class="stat-value" id="exploreRate">0%</div>
+      <div class="stat-sub">全国约 370 个地级市</div>
+    </div>
+
+    <div class="city-list" id="cityList">
+      <div style="color:#444;text-align:center;padding:20px;">点击地图上的城市<br>开始记录旅程</div>
+    </div>
+
+    <button class="reset-btn" onclick="resetAll()">清 空 记 录</button>
+  </aside>
+
+  <div class="main">
+    <div class="header">
+      <span class="header-title">中 国</span>
+      <button class="back-btn" id="backBtn" onclick="backToChina()">← 返回全国</button>
+      <span class="header-hint">点击城市标记 <span>已到达</span></span>
+    </div>
+    <div id="map"></div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#1e1e1e;border:1px solid #333"></div> 未到达</div>
+      <div class="legend-item"><div class="legend-dot" style="background:linear-gradient(135deg,#C9A84C,#F0D060)"></div> 已到达</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== State ==========
+const STORAGE_KEY = 'china-travel-visited';
+const MAP_KEY = 'china-travel-city-province';
+let visited = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'));
+let cityProvinceMap = JSON.parse(localStorage.getItem(MAP_KEY) || '{}');
+let chinaGeoJSON = null;
+let provinceGeoJSON = {};  // adcode -> GeoJSON
+let currentView = 'china'; // 'china' | province adcode
+let chart = null;
+
+// ========== Init ==========
+const mapEl = document.getElementById('map');
+chart = echarts.init(mapEl, null, { backgroundColor: '#0a0a0a' });
+window.addEventListener('resize', () => chart.resize());
+
+// Load China province GeoJSON
+fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
+  .then(r => r.json())
+  .then(geo => {
+    chinaGeoJSON = geo;
+    // Build province name -> adcode mapping
+    chinaGeoJSON.features.forEach(f => {
+      const name = f.properties.name;
+      const adcode = String(f.properties.adcode || f.properties.id || '');
+      if (!adcodeMap[name]) adcodeMap[name] = adcode;
+      if (!adcodeNameMap[adcode]) adcodeNameMap[adcode] = name;
+    });
+    renderChina();
+  })
+  .catch(() => {
+    document.getElementById('map').innerHTML =
+      '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#C9A84C;font-size:18px;">地图加载失败，请检查网络连接</div>';
+  });
+
+const adcodeMap = {};    // province name -> adcode
+const adcodeNameMap = {}; // adcode -> province name
+
+// ========== Render ==========
+function renderChina() {
+  currentView = 'china';
+  document.getElementById('backBtn').classList.remove('show');
+
+  // Register China map with modified properties for highlighting
+  echarts.registerMap('china', chinaGeoJSON);
+
+  const option = buildMapOption('china', chinaGeoJSON.features);
+  chart.setOption(option, true);
+  bindClick('china');
+  updateStats();
+}
+
+function renderProvince(adcode) {
+  currentView = adcode;
+  const provName = adcodeNameMap[adcode] || adcode;
+  document.getElementById('backBtn').classList.add('show');
+  document.querySelector('.header-title').textContent = provName;
+
+  if (provinceGeoJSON[adcode]) {
+    doRenderProvince(adcode);
+    return;
+  }
+
+  showToast('加载中...');
+  fetch(`https://geo.datav.aliyun.com/areas_v3/bound/${adcode}_full.json`)
+    .then(r => r.json())
+    .then(geo => {
+      provinceGeoJSON[adcode] = geo;
+      // Register city->province mapping
+      geo.features.forEach(f => {
+        cityProvinceMap[f.properties.name] = adcode;
+      });
+      localStorage.setItem(MAP_KEY, JSON.stringify(cityProvinceMap));
+      doRenderProvince(adcode);
+    })
+    .catch(() => showToast('该地区暂无城市数据'));
+}
+
+function doRenderProvince(adcode) {
+  const geo = provinceGeoJSON[adcode];
+  const provName = adcodeNameMap[adcode] || adcode;
+  const mapName = 'province_' + adcode;
+  echarts.registerMap(mapName, geo);
+
+  const option = buildMapOption(mapName, geo.features);
+  chart.setOption(option, true);
+  bindClick(mapName);
+}
+
+// ========== Map Option ==========
+function buildMapOption(mapName, features) {
+  const isChinaView = mapName === 'china';
+  const data = features.map(f => {
+    const name = f.properties.name;
+    let isVisited = visited.has(name);
+
+    // Province view: check if any city in this province is visited
+    if (isChinaView && !isVisited) {
+      const adcode = adcodeMap[name];
+      if (adcode) {
+        // Check loaded province GeoJSON
+        if (provinceGeoJSON[adcode]) {
+          isVisited = provinceGeoJSON[adcode].features.some(c => visited.has(c.properties.name));
+        } else {
+          // Fall back to cityProvinceMap
+          isVisited = Object.entries(cityProvinceMap).some(
+            ([city, prov]) => prov === adcode && visited.has(city)
+          );
+        }
+      }
+    }
+
+    return {
+      name: name,
+      itemStyle: {
+        areaColor: isVisited ? '#C9A84C' : '#1e1e1e',
+        borderColor: isVisited ? '#B8941F' : '#2a2a2a',
+        borderWidth: isVisited ? 1.2 : 0.8,
+        shadowBlur: isVisited ? 8 : 0,
+        shadowColor: 'rgba(201,168,76,0.3)'
+      },
+      emphasis: {
+        itemStyle: { areaColor: isVisited ? '#E0C060' : '#2a2a2a' },
+        label: { color: '#fff', fontSize: isChinaView ? 14 : 13 }
+      }
+    };
+  });
+
+  return {
+    tooltip: {
+      trigger: 'item',
+      backgroundColor: '#1a1a1a',
+      borderColor: '#C9A84C',
+      padding: [10, 14],
+      textStyle: { color: '#ccc', fontSize: 13 },
+      formatter: function(params) {
+        if (!params.name) return '';
+        const isVisited = visited.has(params.name);
+        const hint = isChinaView
+          ? '<span style="color:#C9A84C">点击查看城市 →</span>'
+          : (isVisited
+            ? '<span style="color:#C9A84C">★ 已到达（点击取消）</span>'
+            : '<span style="color:#666">点击标记为已到达</span>');
+        return `<span style="font-size:14px;color:#fff">${params.name}</span><br/>${hint}`;
+      }
+    },
+    series: [{
+      type: 'map',
+      map: mapName,
+      roam: true,
+      scaleLimit: { min: 1, max: 8 },
+      zoom: isChinaView ? 1.2 : 1,
+      center: isChinaView ? undefined : undefined,
+      label: {
+        show: true,
+        color: '#888',
+        fontSize: isChinaView ? 10 : 12,
+        formatter: function(p) {
+          if (!p.name) return '';
+          const n = p.name;
+          if (isChinaView) return n.length > 4 ? n.slice(0, 3) : n;
+          return n.length > 4 ? n.slice(0, 3) + '..' : n;
+        }
+      },
+      itemStyle: {
+        borderColor: '#2a2a2a',
+        borderWidth: 0.8,
+        areaColor: '#1e1e1e'
+      },
+      emphasis: {
+        label: { color: '#fff' },
+        itemStyle: { areaColor: '#2a2a2a' }
+      },
+      selectedMode: false,
+      data: data
+    }]
+  };
+}
+
+// ========== Interaction ==========
+function bindClick(mapName) {
+  chart.off('click');
+  chart.on('click', function(params) {
+    if (!params.name) return;
+
+    if (currentView === 'china') {
+      // Province level: drill down to cities
+      const adcode = adcodeMap[params.name];
+      if (adcode) {
+        renderProvince(adcode);
+      }
+    } else {
+      // City level: toggle visited
+      toggleCity(params.name);
+      // Re-render to update color
+      doRenderProvince(currentView);
+      updateStats();
+    }
+  });
+}
+
+function toggleCity(name) {
+  if (visited.has(name)) {
+    visited.delete(name);
+    showToast('已取消：' + name);
+  } else {
+    visited.add(name);
+    showToast('✦ 到达：' + name);
+  }
+  saveVisited();
+}
+
+function backToChina() {
+  document.querySelector('.header-title').textContent = '中 国';
+  renderChina();
+}
+
+// ========== Persistence ==========
+function saveVisited() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify([...visited]));
+}
+
+function resetAll() {
+  if (visited.size === 0) return;
+  if (confirm('确定要清空所有旅行记录吗？此操作不可撤回。')) {
+    visited.clear();
+    saveVisited();
+    if (currentView === 'china') {
+      renderChina();
+    } else {
+      doRenderProvince(currentView);
+    }
+    updateStats();
+    showToast('记录已清空');
+  }
+}
+
+// ========== Stats ==========
+function updateStats() {
+  const count = visited.size;
+  const total = 370;
+  const rate = total > 0 ? ((count / total) * 100).toFixed(1) : '0.0';
+
+  // Count unique provinces from visited cities
+  let provWithVisits = new Set();
+  for (const cityName of visited) {
+    const provAdcode = cityProvinceMap[cityName];
+    if (provAdcode) {
+      provWithVisits.add(provAdcode);
+    }
+  }
+
+  document.getElementById('visitedCount').textContent = count;
+  document.getElementById('exploreRate').textContent = rate + '%';
+  document.getElementById('coverageText').textContent =
+    provWithVisits.size > 0 ? `覆盖 ${provWithVisits.size} 个省份` : '覆盖 0 个省份';
+
+  // Update city list with province info
+  const listEl = document.getElementById('cityList');
+  if (visited.size === 0) {
+    listEl.innerHTML =
+      '<div style="color:#444;text-align:center;padding:20px;">点击地图上的城市<br>开始记录旅程</div>';
+    return;
+  }
+
+  const sorted = [...visited].sort((a, b) => {
+    const pa = adcodeNameMap[cityProvinceMap[a]] || '';
+    const pb = adcodeNameMap[cityProvinceMap[b]] || '';
+    return pa.localeCompare(pb) || a.localeCompare(b);
+  });
+
+  listEl.innerHTML = sorted.map(name => {
+    const provAdcode = cityProvinceMap[name];
+    const provName = adcodeNameMap[provAdcode] || '';
+    return `
+      <div class="city-item">
+        <span>${name}<span class="province"> · ${provName}</span></span>
+        <div class="dot"></div>
+      </div>`;
+  }).join('');
+}
+
+// ========== Toast ==========
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+</script>
+</body>
+</html>
