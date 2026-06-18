@@ -501,6 +501,182 @@
     box-shadow: 0 0 4px rgba(232, 213, 163, 0.5);
   }
 
+
+  .toolbar {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .tool-btn {
+    padding: 9px 12px;
+    background: transparent;
+    border: 1px solid rgba(212, 184, 150, 0.1);
+    color: #8B7D6B;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 11px;
+    letter-spacing: 1px;
+    transition: all 0.25s;
+    text-align: center;
+    font-family: inherit;
+  }
+  .tool-btn:hover {
+    border-color: rgba(212, 184, 150, 0.25);
+    color: #D4B896;
+    background: rgba(212, 184, 150, 0.04);
+  }
+  .tool-btn.active {
+    border-color: rgba(212, 184, 150, 0.4);
+    color: #D4B896;
+    background: rgba(212, 184, 150, 0.08);
+  }
+  .tool-btn-row {
+    display: flex;
+    gap: 8px;
+  }
+  .tool-btn-row .tool-btn { flex: 1; }
+  .year-select {
+    width: 100%;
+    padding: 8px 12px;
+    background: rgba(212, 184, 150, 0.04);
+    border: 1px solid rgba(212, 184, 150, 0.1);
+    border-radius: 8px;
+    color: #D4B896;
+    font-size: 12px;
+    font-family: inherit;
+    outline: none;
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
+  .year-select option {
+    background: #1B1814;
+    color: #D4B896;
+  }
+
+  .home-hint {
+    font-size: 10px;
+    color: #6B5F52;
+    margin-top: 4px;
+    letter-spacing: 1px;
+    text-align: center;
+  }
+
+  .share-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(12, 10, 8, 0.9);
+    z-index: 250;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .share-overlay.show { display: flex; }
+  .share-card {
+    background: #1B1814;
+    border: 1px solid rgba(212, 184, 150, 0.2);
+    border-radius: 16px;
+    overflow: hidden;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+    position: relative;
+  }
+  .share-card-header {
+    padding: 24px 28px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .share-card-title {
+    font-size: 20px;
+    color: #D4B896;
+    letter-spacing: 6px;
+    font-family: "Noto Serif SC", "Source Han Serif SC", "STSong", serif;
+  }
+  .share-card-subtitle {
+    font-size: 10px;
+    color: #6B5F52;
+    letter-spacing: 2px;
+  }
+  .share-card-map {
+    margin: 16px;
+    height: 280px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+  .share-card-stats {
+    display: flex;
+    gap: 20px;
+    padding: 0 28px 10px;
+    justify-content: center;
+  }
+  .share-stat {
+    text-align: center;
+  }
+  .share-stat-val {
+    font-size: 28px;
+    font-weight: 300;
+    color: #D4B896;
+    font-family: "Noto Serif SC", "Source Han Serif SC", "STSong", serif;
+  }
+  .share-stat-label {
+    font-size: 10px;
+    color: #6B5F52;
+    letter-spacing: 2px;
+  }
+  .share-card-footer {
+    padding: 14px 28px 24px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+  }
+  .share-btn-download {
+    padding: 10px 28px;
+    background: linear-gradient(135deg, rgba(212,184,150,0.2), rgba(180,145,100,0.15));
+    border: 1px solid rgba(212, 184, 150, 0.25);
+    color: #D4B896;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    letter-spacing: 2px;
+    font-family: inherit;
+    transition: all 0.25s;
+  }
+  .share-btn-download:hover { background: rgba(212, 184, 150, 0.2); }
+  .share-btn-close {
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: #6B5F52;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    letter-spacing: 1px;
+    font-family: inherit;
+    transition: all 0.25s;
+  }
+  .share-btn-close:hover { border-color: rgba(255, 255, 255, 0.15); color: #8B7D6B; }
+
+  .review-dot {
+    position: absolute;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #D4B896;
+    pointer-events: none;
+    z-index: 50;
+    animation: review-pulse 0.8s ease-out forwards;
+    box-shadow: 0 0 12px rgba(212,184,150,0.6);
+  }
+  @keyframes review-pulse {
+    0%   { transform: scale(0); opacity: 0; }
+    40%  { transform: scale(2.5); opacity: 1; }
+    100% { transform: scale(1.5); opacity: 0.8; }
+  }
+
 </style>
 </head>
 <body>
@@ -530,6 +706,17 @@
     </div>
 
     <button class="reset-btn" id="resetBtn" onclick="resetAll()">清 空 记 录</button>
+    <div class="toolbar">
+      <div class="tool-btn-row">
+        <button class="tool-btn" id="constellationBtn" onclick="toggleConstellation()">✦ 旅行星座</button>
+        <button class="tool-btn" id="reviewBtn" onclick="startYearReview()">▶ 年度回顾</button>
+      </div>
+      <select class="year-select" id="yearSelect" style="display:none;" onchange="onYearSelect(this.value)">
+        <option value="">选择年份...</option>
+      </select>
+      <button class="tool-btn" id="shareBtn" onclick="generateShareCard()">◻ 生成分享卡片</button>
+      <div class="home-hint" id="homeHint"></div>
+    </div>
   </aside>
 
   <div class="main">
@@ -954,7 +1141,7 @@ function buildMapOption(mapName, features) {
 
   const markPoints = isChinaView ? buildMarkPoints() : [];
 
-  return {
+  var option = {
     tooltip: {
       trigger: 'item',
       backgroundColor: 'rgba(30,27,23,0.96)',
@@ -1051,6 +1238,10 @@ function buildMapOption(mapName, features) {
       } : undefined
     }]
   };
+  // Constellation lines
+  var constSeries = buildConstellationSeries();
+  if (constSeries) { option.series.push(constSeries); }
+  return option;
 }
 
 // ========== Interaction ==========
@@ -1145,6 +1336,7 @@ document.addEventListener('keydown', function(e) {
 
 function backToChina() {
   document.getElementById('headerTitle').textContent = t('china');
+  cancelReview();
   renderChina();
 }
 
@@ -1219,6 +1411,19 @@ function updateStats() {
   document.getElementById('coverageText').textContent =
     provCount > 0 ? t('provincesCovered', { n: provCount }) : t('provincesNone');
 
+  // Farthest footprint
+  var homeHintEl = document.getElementById('homeHint');
+  if (!homeCity) {
+    homeHintEl.textContent = '点击城市名旁的 · 设为家坐标';
+  } else {
+    var farthest = getFarthestCity();
+    if (farthest) {
+      homeHintEl.textContent = '从 ' + homeCity + ' 出发，最远抵达 ' + farthest.name + ' · ' + Math.round(farthest.km) + ' km';
+    } else {
+      homeHintEl.textContent = '家：' + homeCity;
+    }
+  }
+
   const listEl = document.getElementById('cityList');
   if (count === 0) {
     listEl.innerHTML =
@@ -1236,11 +1441,13 @@ function updateStats() {
     const provAdcode = cityProvinceMap[name];
     const provName = adcodeNameMap[provAdcode] || '';
     const hasNote = visited[name] && visited[name].note;
+    const isHome = (name === homeCity);
     var noteDot = hasNote ? '<span class="city-note-dot" title="' + visited[name].note.replace(/"/g, '&quot;') + '"></span>' : '';
     var dateStr = (visited[name] && visited[name].date) ? '<span class="province">' + visited[name].date + ' · </span>' : '';
+    var homeClass = isHome ? ' style="background:#E8D5A3;box-shadow:0 0 8px rgba(232,213,163,0.7)"' : '';
     return '<div class="city-item"><span>' + name +
       noteDot +
-      '<span class="province">' + dateStr + provName + '</span></span><div class="dot"></div></div>';
+      '<span class="province">' + dateStr + provName + '</span></span><div class="dot"' + homeClass + ' onclick="event.stopPropagation();setHomeCity(\'' + name + '\')" title="设为家坐标"></div></div>';
   }).join('');
 }
 
@@ -1258,6 +1465,334 @@ function showRipple(e) {
   setTimeout(function() { ripple.remove(); }, 1300);
 }
 
+
+// ========== Home City ==========
+const HOME_KEY = 'china-travel-home';
+let homeCity = localStorage.getItem(HOME_KEY) || '';
+
+function setHomeCity(name) {
+  homeCity = name;
+  localStorage.setItem(HOME_KEY, name);
+  showToast('设定家坐标：' + name);
+  updateStats();
+}
+
+// ========== Distance (Haversine) ==========
+function haversineKm(lon1, lat1, lon2, lat2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function getFarthestCity() {
+  if (!homeCity || !cityCoords[homeCity]) return null;
+  const hc = cityCoords[homeCity];
+  let farthest = null;
+  let maxDist = 0;
+  for (const name of Object.keys(visited)) {
+    const c = cityCoords[name];
+    if (!c) continue;
+    const d = haversineKm(hc[0], hc[1], c[0], c[1]);
+    if (d > maxDist) { maxDist = d; farthest = { name: name, km: d }; }
+  }
+  return farthest;
+}
+
+// ========== Trips (group by date proximity <= 3 days) ==========
+function getTrips() {
+  const entries = [];
+  for (const name of Object.keys(visited)) {
+    const v = visited[name];
+    if (v.date) entries.push({ name: name, date: v.date });
+    else entries.push({ name: name, date: '' });
+  }
+  entries.sort(function(a, b) { return a.date.localeCompare(b.date); });
+  if (!entries.length) return [];
+  const trips = [];
+  let current = [entries[0]];
+  for (let i = 1; i < entries.length; i++) {
+    const prev = current[current.length - 1];
+    if (prev.date && entries[i].date) {
+      const d1 = new Date(prev.date);
+      const d2 = new Date(entries[i].date);
+      const diff = Math.abs(d2 - d1) / (1000 * 60 * 60 * 24);
+      if (diff <= 3) { current.push(entries[i]); continue; }
+    }
+    trips.push(current);
+    current = [entries[i]];
+  }
+  trips.push(current);
+  return trips.filter(function(t) { return t.length >= 2; });
+}
+
+// ========== Constellation Lines ==========
+let constellationOn = false;
+
+function toggleConstellation() {
+  constellationOn = !constellationOn;
+  var btn = document.getElementById('constellationBtn');
+  if (constellationOn) { btn.classList.add('active'); }
+  else { btn.classList.remove('active'); }
+  if (currentView === 'china') { renderChina(); }
+  else { doRenderProvince(currentView); }
+}
+
+function buildConstellationLines() {
+  if (!constellationOn) return [];
+  const trips = getTrips();
+  const lines = [];
+  for (const trip of trips) {
+    for (let i = 0; i < trip.length - 1; i++) {
+      const a = cityCoords[trip[i].name];
+      const b = cityCoords[trip[i + 1].name];
+      if (a && b) {
+        lines.push({ coords: [a, b] });
+      }
+    }
+  }
+  return lines;
+}
+
+function buildConstellationSeries() {
+  const lines = buildConstellationLines();
+  if (!lines.length) return null;
+  return {
+    type: 'lines',
+    coordinateSystem: 'geo',
+    polyline: false,
+    data: lines,
+    lineStyle: {
+      color: 'rgba(212,184,150,0.25)',
+      width: 0.8,
+      type: 'dashed',
+      opacity: 0.6
+    },
+    effect: {
+      show: true,
+      period: 6,
+      trailLength: 0.2,
+      symbol: 'circle',
+      symbolSize: 2,
+      color: 'rgba(232,213,163,0.5)'
+    },
+    zlevel: 1
+  };
+}
+
+// ========== Year Review ==========
+let reviewTimer = null;
+
+function getAvailableYears() {
+  const years = new Set();
+  for (const name of Object.keys(visited)) {
+    const d = visited[name].date;
+    if (d) years.add(d.slice(0, 4));
+  }
+  return Array.from(years).sort().reverse();
+}
+
+function startYearReview() {
+  const years = getAvailableYears();
+  if (!years.length) { showToast('暂无带日期的旅行记录'); return; }
+  var sel = document.getElementById('yearSelect');
+  sel.style.display = 'block';
+  sel.innerHTML = '<option value="">选择年份...</option>' +
+    years.map(function(y) { return '<option value="' + y + '">' + y + ' 年</option>'; }).join('');
+  sel.focus();
+  document.getElementById('reviewBtn').classList.add('active');
+}
+
+function onYearSelect(year) {
+  if (!year) { cancelReview(); return; }
+  var sel = document.getElementById('yearSelect');
+  sel.style.display = 'none';
+  document.getElementById('reviewBtn').classList.remove('active');
+  runYearReview(year);
+}
+
+function cancelReview() {
+  var sel = document.getElementById('yearSelect');
+  sel.style.display = 'none';
+  sel.value = '';
+  document.getElementById('reviewBtn').classList.remove('active');
+}
+
+function runYearReview(year) {
+  if (reviewTimer) { clearTimeout(reviewTimer); reviewTimer = null; }
+  // Go to China view
+  if (currentView !== 'china') { renderChina(); }
+  // Find cities for this year, sorted by date
+  var cities = [];
+  for (var name of Object.keys(visited)) {
+    var d = visited[name].date;
+    if (d && d.slice(0, 4) === year) cities.push({ name: name, date: d });
+  }
+  cities.sort(function(a, b) { return a.date.localeCompare(b.date); });
+  if (!cities.length) { showToast(year + ' 年暂无记录'); return; }
+  showToast('✦ ' + year + ' 年 · ' + cities.length + ' 座城市');
+  // Animate them one by one
+  var i = 0;
+  function next() {
+    if (i >= cities.length) { reviewTimer = null; return; }
+    var c = cities[i];
+    var coords = cityCoords[c.name];
+    if (coords && chart) {
+      // Show a floating dot on the map
+      showReviewDot(coords, c.name, c.date);
+    }
+    i++;
+    reviewTimer = setTimeout(next, 600);
+  }
+  next();
+}
+
+function showReviewDot(coords, name, date) {
+  var mainEl = document.querySelector('.main');
+  // Convert geo coords to pixel position (approximate using ECharts)
+  if (!chart) return;
+  // Use a simple DOM approach - create a dot at a fixed position then fade
+  // For simplicity, show toast-like notifications instead
+  var dot = document.createElement('div');
+  dot.className = 'review-dot';
+  dot.style.left = '50%';
+  dot.style.top = (30 + Math.random() * 40) + '%';
+  dot.textContent = '';
+  mainEl.appendChild(dot);
+  setTimeout(function() { dot.remove(); }, 900);
+  showToast(name + ' · ' + date);
+}
+
+// ========== Share Card ==========
+function generateShareCard() {
+  const cityNames = Object.keys(visited);
+  const count = cityNames.length;
+  const total = 370;
+  const rate = total > 0 ? ((count / total) * 100).toFixed(1) : '0.0';
+  var provSet = new Set();
+  for (var n of cityNames) { var pa = cityProvinceMap[n]; if (pa) provSet.add(pa); }
+
+  document.getElementById('shareCities').textContent = count;
+  document.getElementById('shareProvinces').textContent = provSet.size;
+  document.getElementById('shareRate').textContent = rate + '%';
+  document.getElementById('shareDate').textContent = new Date().toISOString().split('T')[0];
+
+  // Clone the map into the share card
+  var container = document.getElementById('shareMapContainer');
+  container.innerHTML = '';
+  var mapDiv = document.createElement('div');
+  mapDiv.style.cssText = 'width:100%;height:100%;';
+  container.appendChild(mapDiv);
+
+  // Create a minimal ECharts instance for the share card
+  var shareChart = echarts.init(mapDiv, null, { devicePixelRatio: 2 });
+  shareChart.setOption(chart.getOption());
+  // Force resize after animation frame
+  setTimeout(function() {
+    shareChart.resize();
+    shareChart.setOption(chart.getOption());
+  }, 300);
+
+  document.getElementById('shareOverlay').classList.add('show');
+  // Store reference for download
+  window._shareChart = shareChart;
+}
+
+function closeShareCard() {
+  document.getElementById('shareOverlay').classList.remove('show');
+  if (window._shareChart) { window._shareChart.dispose(); window._shareChart = null; }
+  document.getElementById('shareMapContainer').innerHTML = '';
+}
+
+function downloadShareCard() {
+  var card = document.getElementById('shareCard');
+  // Use html2canvas approach or simple data URL from the chart
+  if (!window._shareChart) return;
+  var url = window._shareChart.getDataURL({
+    type: 'png',
+    pixelRatio: 2,
+    backgroundColor: '#1B1814'
+  });
+  // Create a canvas to compose the card
+  var canvas = document.createElement('canvas');
+  canvas.width = 1080;
+  canvas.height = 1350;
+  var ctx = canvas.getContext('2d');
+  // Background
+  ctx.fillStyle = '#1B1814';
+  ctx.fillRect(0, 0, 1080, 1350);
+  // Title
+  ctx.fillStyle = '#D4B896';
+  ctx.font = '300 56px "Noto Serif SC", "Source Han Serif SC", serif';
+  ctx.fillText('城迹', 80, 100);
+  ctx.fillStyle = '#6B5F52';
+  ctx.font = '300 22px "PingFang SC", sans-serif';
+  ctx.fillText('CITYDOTS', 80, 140);
+  // Date
+  ctx.fillStyle = '#8B7D6B';
+  ctx.font = '300 20px "PingFang SC", sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText(new Date().toISOString().split('T')[0], 1000, 120);
+  ctx.textAlign = 'left';
+  // Map image
+  var img = new Image();
+  img.onload = function() {
+    // Map with rounded corners
+    var mr = 30;
+    var mx = 60, my = 170, mw = 960, mh = 700;
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(mx + mr, my);
+    ctx.lineTo(mx + mw - mr, my);
+    ctx.quadraticCurveTo(mx + mw, my, mx + mw, my + mr);
+    ctx.lineTo(mx + mw, my + mh - mr);
+    ctx.quadraticCurveTo(mx + mw, my + mh, mx + mw - mr, my + mh);
+    ctx.lineTo(mx + mr, my + mh);
+    ctx.quadraticCurveTo(mx, my + mh, mx, my + mh - mr);
+    ctx.lineTo(mx, my + mr);
+    ctx.quadraticCurveTo(mx, my, mx + mr, my);
+    ctx.clip();
+    ctx.drawImage(img, mx, my, mw, mh);
+    ctx.restore();
+    // Stats
+    var count = document.getElementById('shareCities').textContent;
+    var provs = document.getElementById('shareProvinces').textContent;
+    var rate = document.getElementById('shareRate').textContent;
+    ctx.fillStyle = '#D4B896';
+    ctx.font = '300 64px "Noto Serif SC", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(count, 310, 970);
+    ctx.fillText(provs, 540, 970);
+    ctx.fillText(rate, 770, 970);
+    ctx.fillStyle = '#6B5F52';
+    ctx.font = '300 22px "PingFang SC", sans-serif';
+    ctx.fillText('城市', 310, 1010);
+    ctx.fillText('省份', 540, 1010);
+    ctx.fillText('探索率', 770, 1010);
+    ctx.textAlign = 'left';
+    // Brand
+    ctx.fillStyle = '#D4B896';
+    ctx.font = '300 36px "Noto Serif SC", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('城迹 · CityDots', 540, 1200);
+    ctx.fillStyle = 'rgba(212,184,150,0.3)';
+    ctx.font = '300 18px "PingFang SC", sans-serif';
+    ctx.fillText('每一座城，都是时间的坐标', 540, 1240);
+    ctx.textAlign = 'left';
+    // Download
+    var link = document.createElement('a');
+    link.download = '城迹_' + new Date().toISOString().split('T')[0] + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    showToast('图片已保存');
+  };
+  img.src = url;
+}
+
+
 // ========== Toast ==========
 let toastTimer;
 function showToast(msg) {
@@ -1268,5 +1803,37 @@ function showToast(msg) {
   toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
 }
 </script>
+
+<div class="share-overlay" id="shareOverlay" onclick="closeShareCard()">
+  <div class="share-card" id="shareCard" onclick="event.stopPropagation()">
+    <div class="share-card-header">
+      <div>
+        <div class="share-card-title">城迹</div>
+        <div class="share-card-subtitle">CITYDOTS</div>
+      </div>
+      <div style="font-size:12px;color:#8B7D6B;letter-spacing:1px;" id="shareDate"></div>
+    </div>
+    <div class="share-card-map" id="shareMapContainer"></div>
+    <div class="share-card-stats">
+      <div class="share-stat">
+        <div class="share-stat-val" id="shareCities">0</div>
+        <div class="share-stat-label">城市</div>
+      </div>
+      <div class="share-stat">
+        <div class="share-stat-val" id="shareProvinces">0</div>
+        <div class="share-stat-label">省份</div>
+      </div>
+      <div class="share-stat">
+        <div class="share-stat-val" id="shareRate">0%</div>
+        <div class="share-stat-label">探索率</div>
+      </div>
+    </div>
+    <div class="share-card-footer">
+      <button class="share-btn-close" onclick="closeShareCard()">关闭</button>
+      <button class="share-btn-download" onclick="downloadShareCard()">保存图片</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
